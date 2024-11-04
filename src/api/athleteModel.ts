@@ -1,5 +1,5 @@
 import dummyData from '../../dummy-data.json';
-import { Athlete } from '../hooks/useAthletes';
+import { Athlete } from '../controllers/useAthletesController';
 
 export const fetchAthletes = async (): Promise<Athlete[]> => {
   return new Promise((resolve) => {
