@@ -1,12 +1,22 @@
+// src/models/athleteModel.ts
 import dummyData from '../../dummy-data.json';
-import { Athlete } from '../controllers/useAthletesController';
+import { Athlete, Metric } from '../controllers/useAthletesController';
 
-let athletes = dummyData.athlethes as Athlete[];
+let athletes = dummyData.athletes as Athlete[];
+let metrics = dummyData.metrics as Metric[];
 
 export const fetchAthletes = async (): Promise<Athlete[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(athletes);
+    }, 1000); 
+  });
+};
+
+export const fetchMetrics = async (): Promise<Metric[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(metrics);
     }, 1000); 
   });
 };

@@ -1,5 +1,5 @@
 {
-    "athlethes": [
+    "athletes": [
         {
             "id": 1,
             "name": "Juan",
@@ -27,7 +27,7 @@
 
     ],
 
-    "Metrics": [
+    "metrics": [
         {
             "id": 1,
             "athleteId": 1,

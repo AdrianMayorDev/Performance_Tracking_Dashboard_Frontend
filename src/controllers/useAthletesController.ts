@@ -1,6 +1,6 @@
 // src/controllers/useAthletesController.ts
 import { useState, useEffect } from 'react';
-import { fetchAthletes, createAthlete, updateAthlete, deleteAthlete } from '../models/athleteModel';
+import { fetchAthletes, fetchMetrics, createAthlete, updateAthlete, deleteAthlete } from '../models/athleteModel';
 
 export interface Athlete {
   id: number;
@@ -9,16 +9,28 @@ export interface Athlete {
   team: string;
 }
 
+export interface Metric {
+  id: number;
+  athleteId: number;
+  metricType: string;
+  value: number;
+  unit: string;
+  timestamp: number;
+}
+
 const useAthletes = () => {
   const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [metrics, setMetrics] = useState<Metric[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    const getAthletes = async () => {
+    const getData = async () => {
       try {
-        const data: Athlete[] = await fetchAthletes();
-        setAthletes(data);
+        const athletesData: Athlete[] = await fetchAthletes();
+        const metricsData: Metric[] = await fetchMetrics();
+        setAthletes(athletesData);
+        setMetrics(metricsData);
       } catch (err) {
         setError(err as Error);
       } finally {
@@ -26,7 +38,7 @@ const useAthletes = () => {
       }
     };
 
-    getAthletes();
+    getData();
   }, []);
 
   const addAthlete = async (athlete: Omit<Athlete, 'id'>) => {
@@ -66,7 +78,7 @@ const useAthletes = () => {
     }
   };
 
-  return { athletes, loading, error, addAthlete, editAthlete, removeAthlete };
+  return { athletes, metrics, loading, error, addAthlete, editAthlete, removeAthlete };
 };
 
 export default useAthletes;
