@@ -10,6 +10,11 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  resolve:{
+    alias:{
+      "@":"/src",
+    }
+  },
   test: {
     globals: true,
     environment: 'jsdom',
