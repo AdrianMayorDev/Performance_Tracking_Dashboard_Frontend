@@ -33,7 +33,7 @@ export const createAthlete = async (athlete: Athlete): Promise<void> => {
 export const updateAthlete = async (updatedAthlete: Athlete): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      athletes = athletes.map(athlete => 
+      athletes = athletes.map(athlete =>
         athlete.id === updatedAthlete.id ? updatedAthlete : athlete
       );
       resolve();
@@ -45,6 +45,24 @@ export const deleteAthlete = async (id: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       athletes = athletes.filter(athlete => athlete.id !== id);
+      resolve();
+    }, 500);
+  });
+};
+
+export const createMetric = async (metric: Metric): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      metrics.push(metric);
+      resolve();
+    }, 500);
+  });
+};
+
+export const deleteMetric = async (id: number): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      metrics = metrics.filter(metric => metric.id !== id);
       resolve();
     }, 500);
   });

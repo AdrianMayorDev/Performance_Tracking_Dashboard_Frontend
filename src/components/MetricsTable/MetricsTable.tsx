@@ -1,4 +1,3 @@
-// src/components/MetricsTable/MetricsTable.tsx
 import React, { useState } from "react";
 import {
 	IonGrid,
@@ -14,8 +13,8 @@ import {
 	IonLabel,
 	IonButton,
 } from "@ionic/react";
-import styled from "styled-components";
 import { Athlete, Metric } from "../../controllers/useAthletesController";
+import styled from "styled-components";
 
 interface MetricsTableProps {
 	athletes: Athlete[];
@@ -23,26 +22,26 @@ interface MetricsTableProps {
 	onSelectAthlete: (athlete: Athlete) => void;
 }
 
-const MetricsTable: React.FC<MetricsTableProps> = ({ athletes, metrics, onSelectAthlete }) => {
+const HeaderRow = styled(IonRow)`
+	background-color: #5d5d66;
+	font-weight: bold;
+	padding: 8px;
+`;
+
+const DataRow = styled(IonRow)`
+	padding: 8px;
+	border-bottom: 1px solid #ccc;
+	cursor: pointer;
+	&:hover {
+		background-color: #f0f0f0;
+		color: black;
+	}
+`;
+
+const MetricsTable: React.FC<MetricsTableProps> = ({ athletes, onSelectAthlete }) => {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const filteredAthletes = athletes.filter((athlete) => athlete.name.toLowerCase().includes(searchTerm.toLowerCase()));
-
-	const HeaderRow = styled(IonRow)`
-		background-color: #e0e0f0;
-		font-weight: bold;
-		padding: 8px;
-	`;
-
-	const DataRow = styled(IonRow)`
-		padding: 8px;
-		border-bottom: 1px solid #ccc;
-		cursor: pointer;
-		&:hover {
-			background-color: #f0f0f0;
-			color: black;
-		}
-	`;
 
 	return (
 		<IonPage>
