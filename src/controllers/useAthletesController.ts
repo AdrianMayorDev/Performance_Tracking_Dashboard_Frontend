@@ -1,6 +1,7 @@
 // src/controllers/useAthletesController.ts
 import { useState, useEffect } from 'react';
-import { fetchAthletes, fetchMetrics, createAthlete, updateAthlete, deleteAthlete, createMetric, deleteMetric } from '../models/athleteModel';
+import { fetchAthletes, createAthlete, updateAthlete, deleteAthlete } from '../models/athleteModel';
+import useMetrics, { Metric } from './useMetricsController';
 
 export interface Athlete {
   id: number;
@@ -9,28 +10,17 @@ export interface Athlete {
   team: string;
 }
 
-export interface Metric {
-  id: number;
-  athleteId: number;
-  metricType: string;
-  value: number;
-  unit: string;
-  timestamp: number;
-}
-
 const useAthletes = () => {
   const [athletes, setAthletes] = useState<Athlete[]>([]);
-  const [metrics, setMetrics] = useState<Metric[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { metrics, loading: metricsLoading, error: metricsError, addMetric, removeMetric } = useMetrics();
 
   useEffect(() => {
     const getData = async () => {
       try {
         const athletesData: Athlete[] = await fetchAthletes();
-        const metricsData: Metric[] = await fetchMetrics();
         setAthletes(athletesData);
-        setMetrics(metricsData);
       } catch (err) {
         setError(err as Error);
       } finally {
@@ -71,31 +61,6 @@ const useAthletes = () => {
     try {
       await deleteAthlete(id);
       setAthletes(await fetchAthletes());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addMetric = async (metric: Omit<Metric, 'id'>) => {
-    setLoading(true);
-    try {
-      const newId = metrics.length > 0 ? Math.max(...metrics.map(m => m.id)) + 1 : 1;
-      await createMetric({ ...metric, id: newId });
-      setMetrics(await fetchMetrics());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const removeMetric = async (id: number) => {
-    setLoading(true);
-    try {
-      await deleteMetric(id);
-      setMetrics(await fetchMetrics());
     } catch (err) {
       setError(err as Error);
     } finally {

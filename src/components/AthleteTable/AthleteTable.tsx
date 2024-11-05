@@ -13,6 +13,7 @@ import {
 	IonInput,
 	IonItem,
 	IonLabel,
+	IonText,
 } from "@ionic/react";
 import styled from "styled-components";
 import useAthletes, { Athlete } from "../../controllers/useAthletesController";
@@ -23,6 +24,7 @@ const DataTable: React.FC = () => {
 	const [newAthlete, setNewAthlete] = useState({ name: "", age: 0, team: "" });
 	const [selectedAthlete, setSelectedAthlete] = useState<Athlete | null>(null);
 	const [showModal, setShowModal] = useState(false);
+	const [ageError, setAgeError] = useState("");
 
 	const HeaderRow = styled(IonRow)`
 		background-color: #5d5d66;
@@ -81,6 +83,11 @@ const DataTable: React.FC = () => {
 	};
 
 	const handleAddAthlete = () => {
+		if (newAthlete.age <= 0) {
+			setAgeError("Age must be a positive number");
+			return;
+		}
+		setAgeError("");
 		addAthlete(newAthlete);
 		setNewAthlete({ name: "", age: 0, team: "" });
 	};
@@ -138,10 +145,12 @@ const DataTable: React.FC = () => {
 							<IonItem>
 								<IonLabel position='floating'>Age</IonLabel>
 								<IonInput
+									type='number'
 									value={newAthlete.age}
 									onIonChange={(e) => setNewAthlete({ ...newAthlete, age: Number(e.detail.value) })}
 								/>
 							</IonItem>
+							{ageError && <IonText color='danger'>{ageError}</IonText>}
 						</IonCol>
 						<IonCol>
 							<IonItem>

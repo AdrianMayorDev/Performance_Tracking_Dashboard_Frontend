@@ -4,7 +4,6 @@ import { IonReactRouter } from "@ionic/react-router";
 import { ellipse, square, triangle } from "ionicons/icons";
 import Athletes from "./pages/Athletes";
 import Metrics from "./pages/Metrics";
-import Tab3 from "./pages/Tab3";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -49,9 +48,6 @@ const App: React.FC = () => (
 					<Route exact path='/metrics'>
 						<Metrics />
 					</Route>
-					<Route path='/tab3'>
-						<Tab3 />
-					</Route>
 					<Route exact path='/'>
 						<Redirect to='/athletes' />
 					</Route>
@@ -64,10 +60,6 @@ const App: React.FC = () => (
 					<IonTabButton tab='Metrics' href='/metrics'>
 						<IonIcon aria-hidden='true' icon={ellipse} />
 						<IonLabel>Metrics</IonLabel>
-					</IonTabButton>
-					<IonTabButton tab='tab3' href='/tab3'>
-						<IonIcon aria-hidden='true' icon={square} />
-						<IonLabel>Tab 3</IonLabel>
 					</IonTabButton>
 				</IonTabBar>
 			</IonTabs>

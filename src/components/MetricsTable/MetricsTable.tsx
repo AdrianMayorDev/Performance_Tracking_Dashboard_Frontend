@@ -11,14 +11,14 @@ import {
 	IonInput,
 	IonItem,
 	IonLabel,
-	IonButton,
+	IonSpinner,
 } from "@ionic/react";
-import { Athlete, Metric } from "../../controllers/useAthletesController";
 import styled from "styled-components";
+import { Athlete } from "../../controllers/useAthletesController";
 
 interface MetricsTableProps {
 	athletes: Athlete[];
-	metrics: Metric[];
+	loading: boolean;
 	onSelectAthlete: (athlete: Athlete) => void;
 }
 
@@ -38,10 +38,25 @@ const DataRow = styled(IonRow)`
 	}
 `;
 
-const MetricsTable: React.FC<MetricsTableProps> = ({ athletes, onSelectAthlete }) => {
+const MetricsTable: React.FC<MetricsTableProps> = ({ athletes, loading, onSelectAthlete }) => {
 	const [searchTerm, setSearchTerm] = useState("");
 
 	const filteredAthletes = athletes.filter((athlete) => athlete.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+	if (loading) {
+		return (
+			<IonPage>
+				<IonHeader>
+					<IonToolbar>
+						<IonTitle>Metrics Table</IonTitle>
+					</IonToolbar>
+				</IonHeader>
+				<IonContent>
+					<IonSpinner />
+				</IonContent>
+			</IonPage>
+		);
+	}
 
 	return (
 		<IonPage>

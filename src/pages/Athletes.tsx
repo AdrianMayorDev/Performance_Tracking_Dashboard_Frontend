@@ -1,6 +1,6 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
 import "./Athletes.css";
-import DataTable from "../components/DataTable/DataTable";
+import AthleteTable from "../components/AthleteTable/AthleteTable";
 
 const Athletes: React.FC = () => {
 	return (
@@ -16,7 +16,7 @@ const Athletes: React.FC = () => {
 						<IonTitle size='large'>Athletes</IonTitle>
 					</IonToolbar>
 				</IonHeader>
-				<DataTable />
+				<AthleteTable />
 			</IonContent>
 		</IonPage>
 	);

@@ -11,6 +11,7 @@ import {
 	IonItem,
 	IonLabel,
 	IonInput,
+	IonText,
 } from "@ionic/react";
 import MetricsTable from "../components/MetricsTable/MetricsTable";
 import { Athlete } from "../controllers/useAthletesController";
@@ -18,9 +19,11 @@ import useAthletes from "../controllers/useAthletesController";
 import { useState } from "react";
 
 const Metrics: React.FC = () => {
-	const { athletes, metrics, addMetric, removeMetric } = useAthletes();
+	const { athletes, metrics, loading, addMetric, removeMetric } = useAthletes();
 	const [selectedAthlete, setSelectedAthlete] = useState<Athlete | null>(null);
 	const [newMetric, setNewMetric] = useState({ athleteId: 0, metricType: "", value: 0, unit: "", timestamp: Date.now() });
+	const [valueError, setValueError] = useState("");
+	const [unitError, setUnitError] = useState("");
 
 	const handleSelectAthlete = (athlete: Athlete) => {
 		setSelectedAthlete(athlete);
@@ -28,6 +31,16 @@ const Metrics: React.FC = () => {
 	};
 
 	const handleAddMetric = () => {
+		if (newMetric.value <= 0) {
+			setValueError("Value must be a positive number");
+			return;
+		}
+		if (!["kg", "m/s"].includes(newMetric.unit)) {
+			setUnitError("Unit must be either 'kg' or 'm/s'");
+			return;
+		}
+		setValueError("");
+		setUnitError("");
 		addMetric(newMetric);
 		setNewMetric({ athleteId: selectedAthlete!.id, metricType: "", value: 0, unit: "", timestamp: Date.now() });
 	};
@@ -79,10 +92,12 @@ const Metrics: React.FC = () => {
 									<IonItem>
 										<IonLabel position='floating'>Value</IonLabel>
 										<IonInput
+											type='number'
 											value={newMetric.value}
 											onIonChange={(e) => setNewMetric({ ...newMetric, value: Number(e.detail.value) })}
 										/>
 									</IonItem>
+									{valueError && <IonText color='danger'>{valueError}</IonText>}
 								</IonCol>
 								<IonCol>
 									<IonItem>
@@ -92,6 +107,7 @@ const Metrics: React.FC = () => {
 											onIonChange={(e) => setNewMetric({ ...newMetric, unit: e.detail.value! })}
 										/>
 									</IonItem>
+									{unitError && <IonText color='danger'>{unitError}</IonText>}
 								</IonCol>
 								<IonCol>
 									<IonButton onClick={handleAddMetric}>Add Metric</IonButton>
@@ -100,7 +116,7 @@ const Metrics: React.FC = () => {
 						</IonGrid>
 					</div>
 				) : (
-					<MetricsTable athletes={athletes} metrics={metrics} onSelectAthlete={handleSelectAthlete} />
+					<MetricsTable athletes={athletes} loading={loading} onSelectAthlete={handleSelectAthlete} />
 				)}
 			</IonContent>
 		</IonPage>
