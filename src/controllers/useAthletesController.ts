@@ -1,7 +1,5 @@
-// src/controllers/useAthletesController.ts
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { fetchAthletes, createAthlete, updateAthlete, deleteAthlete } from '../models/athleteModel';
-import useMetrics, { Metric } from './useMetricsController';
 
 export interface Athlete {
   id: number;
@@ -11,64 +9,45 @@ export interface Athlete {
 }
 
 const useAthletes = () => {
-  const [athletes, setAthletes] = useState<Athlete[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const { metrics, loading: metricsLoading, error: metricsError, addMetric, removeMetric } = useMetrics();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const athletesData: Athlete[] = await fetchAthletes();
-        setAthletes(athletesData);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: athletes, isLoading, error } = useQuery<Athlete[]>('athletes', fetchAthletes);
 
-    getData();
-  }, []);
+  const createMutation = useMutation(createAthlete, {
+    onSuccess: (newAthlete) => {
+      queryClient.setQueryData<Athlete[]>('athletes', (old) => [...(old || []), newAthlete]);
+    },
+  });
+
+  const updateMutation = useMutation(updateAthlete, {
+    onSuccess: (updatedAthlete) => {
+      queryClient.setQueryData<Athlete[]>('athletes', (old) =>
+        old?.map((athlete) => (athlete.id === updatedAthlete.id ? updatedAthlete : athlete)) || []
+      );
+    },
+  });
+
+  const deleteMutation = useMutation(deleteAthlete, {
+    onSuccess: (_, id) => {
+      queryClient.setQueryData<Athlete[]>('athletes', (old) =>
+        old?.filter((athlete) => athlete.id !== id) || []
+      );
+    },
+  });
 
   const addAthlete = async (athlete: Omit<Athlete, 'id'>) => {
-    setLoading(true);
-    try {
-      const newId = athletes.length > 0 ? Math.max(...athletes.map(a => a.id)) + 1 : 1;
-      await createAthlete({ ...athlete, id: newId });
-      setAthletes(await fetchAthletes());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
+    await createMutation.mutateAsync(athlete);
   };
 
   const editAthlete = async (athlete: Athlete) => {
-    setLoading(true);
-    try {
-      await updateAthlete(athlete);
-      setAthletes(await fetchAthletes());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
+    await updateMutation.mutateAsync(athlete);
   };
 
   const removeAthlete = async (id: number) => {
-    setLoading(true);
-    try {
-      await deleteAthlete(id);
-      setAthletes(await fetchAthletes());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
+    await deleteMutation.mutateAsync(id);
   };
 
-  return { athletes, metrics, loading, error, addAthlete, editAthlete, removeAthlete, addMetric, removeMetric };
+  return { athletes, isLoading, error, addAthlete, editAthlete, removeAthlete };
 };
 
 export default useAthletes;

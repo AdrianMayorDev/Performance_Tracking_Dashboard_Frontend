@@ -1,42 +1,23 @@
-// src/models/athleteModel.ts
-import dummyData from '../../dummy-data.json';
+import axios from 'axios';
 import { Athlete } from '../controllers/useAthletesController';
 
-let athletes = dummyData.athletes as Athlete[];
+const BASE_URL = 'http://localhost:3000';
 
 export const fetchAthletes = async (): Promise<Athlete[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(athletes);
-    }, 1000); 
-  });
+  const response = await axios.get(`${BASE_URL}/athletes`);
+  return response.data;
 };
 
-export const createAthlete = async (athlete: Athlete): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      athletes.push(athlete);
-      resolve();
-    }, 500);
-  });
+export const createAthlete = async (athlete: Omit<Athlete, 'id'>): Promise<Athlete> => {
+  const response = await axios.post(`${BASE_URL}/athletes`, athlete);
+  return response.data;
 };
 
-export const updateAthlete = async (updatedAthlete: Athlete): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      athletes = athletes.map(athlete =>
-        athlete.id === updatedAthlete.id ? updatedAthlete : athlete
-      );
-      resolve();
-    }, 500);
-  });
+export const updateAthlete = async (athlete: Athlete): Promise<Athlete> => {
+  const response = await axios.put(`${BASE_URL}/athletes/${athlete.id}`, athlete);
+  return response.data;
 };
 
 export const deleteAthlete = async (id: number): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      athletes = athletes.filter(athlete => athlete.id !== id);
-      resolve();
-    }, 500);
-  });
+  await axios.delete(`${BASE_URL}/athletes/${id}`);
 };

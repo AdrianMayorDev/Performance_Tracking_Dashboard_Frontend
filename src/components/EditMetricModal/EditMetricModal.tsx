@@ -1,7 +1,7 @@
 // src/components/EditMetricModal/EditMetricModal.tsx
 import { IonModal, IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonItem, IonLabel, IonInput, IonList } from "@ionic/react";
-import { Metric } from "../../controllers/useAthletesController";
 import { useEffect, useState } from "react";
+import { Metric } from "../../controllers/useMetricsController";
 
 interface EditMetricModalProps {
 	isOpen: boolean;
