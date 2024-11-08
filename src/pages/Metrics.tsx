@@ -18,35 +18,27 @@ import MetricsTable from "../components/MetricsTable/MetricsTable";
 import { Athlete } from "../controllers/useAthletesController";
 import useAthletes from "../controllers/useAthletesController";
 import useMetrics from "../controllers/useMetricsController";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMetricsTable } from "../hooks/useMetricTable";
 
 const Metrics: React.FC = () => {
-	const { athletes, isLoading: athletesLoading, error: athletesError } = useAthletes();
-	const [selectedAthlete, setSelectedAthlete] = useState<Athlete | null>(null);
-	const { metrics, isLoading: metricsLoading, error: metricsError, addMetric, removeMetric } = useMetrics(selectedAthlete?.id || 0);
-	const [newMetric, setNewMetric] = useState({ athleteId: 0, metricType: "", value: 0, unit: "", timestamp: Date.now() });
-	const [valueError, setValueError] = useState("");
-	const [unitError, setUnitError] = useState("");
-
-	const handleSelectAthlete = (athlete: Athlete) => {
-		setSelectedAthlete(athlete);
-		setNewMetric({ ...newMetric, athleteId: athlete.id });
-	};
-
-	const handleAddMetric = async () => {
-		if (newMetric.value <= 0) {
-			setValueError("Value must be a positive number");
-			return;
-		}
-		if (!["kg", "m/s"].includes(newMetric.unit)) {
-			setUnitError("Unit must be either 'kg' or 'm/s'");
-			return;
-		}
-		setValueError("");
-		setUnitError("");
-		await addMetric(newMetric);
-		setNewMetric({ athleteId: selectedAthlete!.id, metricType: "", value: 0, unit: "", timestamp: Date.now() });
-	};
+	const {
+		athletes,
+		athletesLoading,
+		athletesError,
+		selectedAthlete,
+		setSelectedAthlete,
+		metrics,
+		metricsLoading,
+		metricsError,
+		newMetric,
+		setNewMetric,
+		valueError,
+		unitError,
+		handleSelectAthlete,
+		handleAddMetric,
+		removeMetric,
+	} = useMetricsTable();
 
 	if (athletesLoading || metricsLoading) return <IonSpinner />;
 	if (athletesError) return <IonText color='danger'>Error: {(athletesError as Error).message}</IonText>;
@@ -121,7 +113,7 @@ const Metrics: React.FC = () => {
 						</IonGrid>
 					</div>
 				) : (
-					<MetricsTable athletes={athletes || []} loading={athletesLoading} onSelectAthlete={handleSelectAthlete} />
+					<MetricsTable athletes={athletes!} loading={athletesLoading} onSelectAthlete={handleSelectAthlete} />
 				)}
 			</IonContent>
 		</IonPage>
