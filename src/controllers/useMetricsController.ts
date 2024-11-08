@@ -1,5 +1,4 @@
-// src/controllers/useMetrics.ts
-import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { fetchMetrics, createMetric, deleteMetric } from '../models/metricModel';
 
 export interface Metric {
@@ -11,52 +10,34 @@ export interface Metric {
   timestamp: number;
 }
 
-const useMetrics = () => {
-  const [metrics, setMetrics] = useState<Metric[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
+const useMetrics = (athleteId: number) => {
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const metricsData: Metric[] = await fetchMetrics();
-        setMetrics(metricsData);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: metrics, isLoading, error } = useQuery<Metric[]>(['metrics', athleteId], () => fetchMetrics(athleteId));
 
-    getData();
-  }, []);
+  const createMutation = useMutation((metric: Omit<Metric, 'id'>) => createMetric(athleteId, metric), {
+    onSuccess: (newMetric) => {
+      queryClient.setQueryData<Metric[]>(['metrics', athleteId], (old) => [...(old || []), newMetric]);
+    },
+  });
+
+  const deleteMutation = useMutation((metricId: number) => deleteMetric(athleteId, metricId), {
+    onSuccess: (_, metricId) => {
+      queryClient.setQueryData<Metric[]>(['metrics', athleteId], (old) =>
+        old?.filter((metric) => metric.id !== metricId) || []
+      );
+    },
+  });
 
   const addMetric = async (metric: Omit<Metric, 'id'>) => {
-    setLoading(true);
-    try {
-      const newId = metrics.length > 0 ? Math.max(...metrics.map(m => m.id)) + 1 : 1;
-      await createMetric({ ...metric, id: newId });
-      setMetrics(await fetchMetrics());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
+    await createMutation.mutateAsync(metric);
   };
 
-  const removeMetric = async (id: number) => {
-    setLoading(true);
-    try {
-      await deleteMetric(id);
-      setMetrics(await fetchMetrics());
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
+  const removeMetric = async (metricId: number) => {
+    await deleteMutation.mutateAsync(metricId);
   };
 
-  return { metrics, loading, error, addMetric, removeMetric };
+  return { metrics, isLoading, error, addMetric, removeMetric };
 };
 
 export default useMetrics;
