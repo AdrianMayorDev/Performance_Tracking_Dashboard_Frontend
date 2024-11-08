@@ -1,5 +1,4 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from "@ionic/react";
-import "./Athletes.css";
 import AthleteTable from "../components/AthleteTable/AthleteTable";
 
 const Athletes: React.FC = () => {
