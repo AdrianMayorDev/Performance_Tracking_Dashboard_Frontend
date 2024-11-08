@@ -1,7 +1,8 @@
 // src/components/EditMetricModal/EditMetricModal.tsx
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonItem, IonLabel, IonInput, IonList } from "@ionic/react";
+import { IonModal, IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonList } from "@ionic/react";
 import { useEffect, useState } from "react";
 import { Metric } from "../../controllers/useMetricsController";
+import InputField from "../InputField/InputField";
 
 interface EditMetricModalProps {
 	isOpen: boolean;
@@ -36,42 +37,24 @@ const EditMetricModal: React.FC<EditMetricModalProps> = ({ isOpen, metric, onClo
 			<IonContent>
 				{editedMetric && (
 					<IonList>
-						<IonItem>
-							<IonLabel position='floating'>Metric Type</IonLabel>
-							<IonInput
-								value={editedMetric.metricType}
-								onIonChange={(e) =>
-									setEditedMetric({
-										...editedMetric,
-										metricType: e.detail.value!,
-									})
-								}
-							/>
-						</IonItem>
-						<IonItem>
-							<IonLabel position='floating'>Value</IonLabel>
-							<IonInput
-								value={editedMetric.value}
-								onIonChange={(e) =>
-									setEditedMetric({
-										...editedMetric,
-										value: Number(e.detail.value),
-									})
-								}
-							/>
-						</IonItem>
-						<IonItem>
-							<IonLabel position='floating'>Unit</IonLabel>
-							<IonInput
-								value={editedMetric.unit}
-								onIonChange={(e) =>
-									setEditedMetric({
-										...editedMetric,
-										unit: e.detail.value!,
-									})
-								}
-							/>
-						</IonItem>
+						<InputField
+							label='Metric Type'
+							value={editedMetric.metricType}
+							onChange={(value) => setEditedMetric({ ...editedMetric, metricType: value as string })}
+						/>
+
+						<InputField
+							label='Value'
+							type='number'
+							value={editedMetric.value}
+							onChange={(value) => setEditedMetric({ ...editedMetric, value: value as number })}
+						/>
+
+						<InputField
+							label='Unit'
+							value={editedMetric.unit}
+							onChange={(value) => setEditedMetric({ ...editedMetric, unit: value as string })}
+						/>
 						<IonButton expand='block' onClick={handleSave}>
 							Save
 						</IonButton>

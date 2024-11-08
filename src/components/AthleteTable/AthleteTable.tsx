@@ -10,9 +10,6 @@ import {
 	IonToolbar,
 	IonSpinner,
 	IonButton,
-	IonInput,
-	IonItem,
-	IonLabel,
 	IonText,
 } from "@ionic/react";
 import EditAthleteModal from "../EditAthleteModal/EditAthleteModal";

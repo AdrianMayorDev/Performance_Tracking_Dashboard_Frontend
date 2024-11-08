@@ -1,6 +1,7 @@
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonItem, IonLabel, IonInput, IonList } from "@ionic/react";
+import { IonModal, IonHeader, IonToolbar, IonTitle, IonButton, IonContent, IonList } from "@ionic/react";
 import { Athlete } from "../../controllers/useAthletesController";
 import { useEffect, useState } from "react";
+import InputField from "../InputField/InputField";
 
 interface EditAthleteModalProps {
 	isOpen: boolean;
@@ -35,46 +36,22 @@ const EditAthleteModal: React.FC<EditAthleteModalProps> = ({ isOpen, athlete, on
 			<IonContent>
 				{editedAthlete && (
 					<IonList>
-						<IonItem>
-							<IonLabel position='floating'>ID</IonLabel>
-							<IonInput value={editedAthlete.id} readonly />
-						</IonItem>
-						<IonItem>
-							<IonLabel position='floating'>Name</IonLabel>
-							<IonInput
-								value={editedAthlete.name}
-								onIonChange={(e) =>
-									setEditedAthlete({
-										...editedAthlete,
-										name: e.detail.value!,
-									})
-								}
-							/>
-						</IonItem>
-						<IonItem>
-							<IonLabel position='floating'>Age</IonLabel>
-							<IonInput
-								value={editedAthlete.age}
-								onIonChange={(e) =>
-									setEditedAthlete({
-										...editedAthlete,
-										age: Number(e.detail.value),
-									})
-								}
-							/>
-						</IonItem>
-						<IonItem>
-							<IonLabel position='floating'>Team</IonLabel>
-							<IonInput
-								value={editedAthlete.team}
-								onIonChange={(e) =>
-									setEditedAthlete({
-										...editedAthlete,
-										team: e.detail.value!,
-									})
-								}
-							/>
-						</IonItem>
+						<InputField
+							label='Name'
+							value={editedAthlete.name}
+							onChange={(value) => setEditedAthlete({ ...editedAthlete, name: value as string })}
+						/>
+						<InputField
+							label='Age'
+							type='number'
+							value={editedAthlete.age}
+							onChange={(value) => setEditedAthlete({ ...editedAthlete, age: value as number })}
+						/>
+						<InputField
+							label='Team'
+							value={editedAthlete.team}
+							onChange={(value) => setEditedAthlete({ ...editedAthlete, team: value as string })}
+						/>
 						<IonButton expand='block' onClick={handleSave}>
 							Save
 						</IonButton>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Metric } from '../controllers/useMetricsController';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:3000';
 
 export const fetchMetrics = async (athleteId: number): Promise<Metric[]> => {
   const response = await axios.get(`${BASE_URL}/metrics/${athleteId}`);

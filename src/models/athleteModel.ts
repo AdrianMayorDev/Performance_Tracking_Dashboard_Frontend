@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Athlete } from '../controllers/useAthletesController';
 
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:3000';
 
 export const fetchAthletes = async (): Promise<Athlete[]> => {
   const response = await axios.get(`${BASE_URL}/athletes`);
