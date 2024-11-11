@@ -10,8 +10,6 @@ Este proyecto es una aplicación de seguimiento de rendimiento desarrollada con 
 -   [Configuración](#configuración)
 -   [Uso](#uso)
 -   [Pruebas](#pruebas)
--   [Contribuir](#contribuir)
--   [Licencia](#licencia)
 
 ## Instalación
 
